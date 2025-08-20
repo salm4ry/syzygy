@@ -1,4 +1,5 @@
 from parse_struct import Struct
+from compile import compile_prog
 
 
 def extract_structs(filename: str):
@@ -52,6 +53,9 @@ if __name__ == "__main__":
 
     for x in structs:
         print(x)
+
+    print()
+    compile_prog("test_struct.c")
 
     '''
     # print members, including sizes
