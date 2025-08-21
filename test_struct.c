@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 struct foo {
 	int a;
 	short b;
@@ -21,3 +23,15 @@ typedef struct baz_2 {
 	int age;
 	double money;
 } baz_2_t;
+
+int main(int argc, char *argv[])
+{
+	printf("sizeof(foo) = %ld\n"
+	       "sizeof(bar) = %ld\n"
+	       "sizeof(baz) = %ld\n"
+	       "sizeof(baz_2) = %ld\n",
+	       sizeof(struct foo), sizeof(struct bar),
+	       sizeof(struct baz), sizeof(struct baz_2));
+
+	return 0;
+}

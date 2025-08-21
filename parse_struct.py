@@ -46,6 +46,9 @@ class StructMember:
     def __str__(self):
         return f"{self.name} ({" ".join(self.type_str)})"
 
+    def to_tuple(self):
+        return (self.name, self.dtype)
+
 
 class Struct:
     def __init__(self, name, members):
