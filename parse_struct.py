@@ -3,6 +3,9 @@ from pydoc import locate
 
 ASTERISK = "*"
 
+# TODO docstrings
+# https://peps.python.org/pep-0257/
+
 
 def extract_type(member: str):
     # locate data type from name
@@ -62,3 +65,8 @@ class Struct:
 
         res = res[0] + ", ".join(res[1:])
         return res
+
+    def to_class(self):
+        return type(self.name, (ctypes.Structure,),
+                    {"_fields_": [member.to_tuple() for member in
+                                  self.members]})

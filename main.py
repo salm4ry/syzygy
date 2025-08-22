@@ -3,6 +3,8 @@ from parse_struct import Struct
 from compile import compile_prog
 
 
+# TODO docstrings
+
 def extract_structs(filename: str):
     structs = {}
 
@@ -51,6 +53,13 @@ def extract_structs(filename: str):
 if __name__ == "__main__":
     structs = [Struct(key, val)
                for key, val in extract_structs("test_struct.c").items()]
+    struct_classes = []
+
+    for struct in structs:
+        struct_classes.append(struct.to_class())
+
+    for i in struct_classes:
+        print(i)
 
     for struct in structs:
         # define ctypes.Structure containing the struct's members
