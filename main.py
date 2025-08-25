@@ -1,17 +1,30 @@
+"""Main syzygy code:
+
+Parse a C file's structs and output size and alignment information
+"""
+
 import ctypes
 import logging
 from parse_struct import Struct, extract_type_with_struct
 # from compile import compile_prog
 
+# set up logging
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+# logger.setLevel(logging.DEBUG)  # set log level for main
 
-# TODO docstrings
 
 def extract_structs(filename: str):
-    structs = {}
+    """Extract struct text from a C file
 
-    src = open(filename, 'r')
-    data = src.readlines()
-    src.close()
+    Return:
+        struct_dict (dict): struct name:members dictionary
+    """
+    struct_dict = {}
+    data = None
+
+    with open(filename, 'r', encoding="ascii") as src:
+        data = src.readlines()
 
     line = ""
     line_num = 0
@@ -40,23 +53,19 @@ def extract_structs(filename: str):
             line_num += 1
             continue
 
-        structs[name] = []
+        struct_dict[name] = []
 
         line_num += 1
-        structs[name] = parse_struct()
-        # print(f"parsed struct {name}, line_num = {line_num}")
+        struct_dict[name] = parse_struct()
+        logger.debug("parsed struct %s, line_num = %d",
+                     name, line_num)
 
         line_num += 1
 
-    return structs
+    return struct_dict
 
 
 if __name__ == "__main__":
-    # set up logging
-    logging.basicConfig()
-    logger = logging.getLogger(__name__)
-    # logger.setLevel(logging.DEBUG)  # set log level for main
-
     structs = [Struct(key, val)
                for key, val in extract_structs("test_struct.c").items()]
     struct_classes = []
