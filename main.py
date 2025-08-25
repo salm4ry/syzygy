@@ -1,6 +1,7 @@
 import ctypes
-from parse_struct import Struct
-from compile import compile_prog
+import logging
+from parse_struct import Struct, extract_type_with_struct
+# from compile import compile_prog
 
 
 # TODO docstrings
@@ -51,36 +52,44 @@ def extract_structs(filename: str):
 
 
 if __name__ == "__main__":
+    # set up logging
+    logging.basicConfig()
+    logger = logging.getLogger(__name__)
+    # logger.setLevel(logging.DEBUG)  # set log level for main
+
     structs = [Struct(key, val)
                for key, val in extract_structs("test_struct.c").items()]
     struct_classes = []
 
     for struct in structs:
-        struct_classes.append(struct.to_class())
+        if struct.structure is not None:
+            struct_classes.append(struct.structure)
+        else:
+            for member in struct.members:
+                if member.dtype is None:
+                    # find required struct
+                    required_struct = [x for x in structs if x.name ==
+                                       member.dep_struct][0]
 
-    for i in struct_classes:
-        print(i)
+                    logger.debug("%s.%s: found %s", struct.name, member.name,
+                                 required_struct)
 
+                    member.dtype = extract_type_with_struct(member.type_str,
+                                                            required_struct)
+
+                    logger.debug("%s.%s has type %s", struct.name, member.name,
+                                 member.dtype)
+
+            struct.structure = struct.to_structure()
+            struct_classes.append(struct.structure)
+
+    # print structs, members, and their sizes
     for struct in structs:
-        # define ctypes.Structure containing the struct's members
-        class TempStruct(ctypes.Structure):
-            _fields_ = [member.to_tuple() for member in struct.members]
-
-        # print the sizes of each of the members followed by the size of the
-        # struct
-        print(f"{[ctypes.sizeof(member.dtype) for member in struct.members]}"
-              f" -> {ctypes.sizeof(TempStruct())}")
-
-
-    '''
-    print()
-    compile_prog("test_struct.c")
-
-    # print members, including sizes
-    for key in structs.keys():
-        print(f"{key}: ")
-        for i in structs[key]:
-            print(f"  {i} (= {ctypes.sizeof(extract_type(i))})")
-            StructMember(i)
+        print(f"{struct.name}: "
+              f"{[ctypes.sizeof(member.dtype) for member in struct.members]}"
+              f" -> {ctypes.sizeof(struct.structure)}, "
+              f"alignment {ctypes.alignment(struct.structure)}")
+        for member in struct.members:
+            print(f"    {member} -> {member.dtype} "
+                  f"({ctypes.sizeof(member.dtype)})")
         print()
-    '''
