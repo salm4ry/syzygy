@@ -65,6 +65,26 @@ def extract_structs(filename: str):
     return struct_dict
 
 
+def visualise_struct(struct: Struct):
+    """Visualise struct member alignment
+
+        --- = filled bytes
+        xxx = unused bytes
+    """
+    alignment = ctypes.alignment(struct.structure)
+
+    print("|", end="")
+    for member in struct.members:
+        member_size = ctypes.sizeof(member.dtype)
+        if member_size == alignment:
+            print(member_size * "-", end="|")
+        else:
+            print("".join([member_size * "-",
+                           (alignment - member_size) * "x"]),
+                  end="|")
+    print()
+
+
 if __name__ == "__main__":
     structs = [Struct(key, val)
                for key, val in extract_structs("test_struct.c").items()]
@@ -101,4 +121,6 @@ if __name__ == "__main__":
         for member in struct.members:
             print(f"    {member} -> {member.dtype} "
                   f"({ctypes.sizeof(member.dtype)})")
+
+        visualise_struct(struct)
         print()
