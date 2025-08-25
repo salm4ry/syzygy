@@ -20,6 +20,8 @@ typedef struct baz {
 
 typedef struct baz_2 {
 	char* name;
+	char **double_name;
+	struct baz before;
 	int age;
 	double money;
 } baz_2_t;
