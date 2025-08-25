@@ -86,6 +86,11 @@ def visualise_struct(struct: Struct):
 
 
 if __name__ == "__main__":
+    # TODO tidy up struct parsing from file into more functions
+    # -> maybe a class for a given file?
+    # would allow struct dependencies to be handled automatically instead of in
+    # main()
+
     structs = [Struct(key, val)
                for key, val in extract_structs("test_struct.c").items()]
     struct_classes = []
