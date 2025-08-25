@@ -6,6 +6,11 @@ from pydoc import locate
 
 ASTERISK = "*"
 
+# set up logging
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+# logger.setLevel(logging.DEBUG)  # set log level for this module
+
 
 def extract_type(type_str: str):
     """Extract ctypes data type from a string
@@ -48,14 +53,14 @@ class StructMember:
                                     asterisk_count])))
 
         self.dtype = extract_type(" ".join(self.type_str))
-        logging.debug("name = %s, type_str = %s, dtype = %s",
-                      self.name, self.type_str, self.dtype)
+        logger.debug("name = %s, type_str = %s, dtype = %s",
+                     self.name, self.type_str, self.dtype)
 
         # type requires a struct
         if self.dtype is None:
             self.dep_struct = ("".join(self.type_str)).replace(
                     "struct", "")
-            logging.debug("member %s needs %s", self.name, self.dep_struct)
+            logger.debug("member %s needs %s", self.name, self.dep_struct)
 
     def __str__(self):
         return f"{self.name} ({" ".join(self.type_str)})"
