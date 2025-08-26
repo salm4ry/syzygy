@@ -5,9 +5,12 @@ Parse a C file's structs and output size and alignment information
 
 import ctypes
 import logging
-from sys import argv
+import sys
+import argparse
+
 from parse_struct import Struct, extract_type_with_struct
 from compile import compile_prog
+from args import init_arg_parser
 
 # set up logging
 logging.basicConfig()
@@ -135,17 +138,19 @@ def visualise_struct(struct: Struct):
 
 
 if __name__ == "__main__":
-    if len(argv) < 2:
-        print(f"usage: {argv[0]} <source_file>")
-        exit(1)
+    parser = argparse.ArgumentParser()
+    init_arg_parser(parser)
+    args = parser.parse_args()
 
-    compiled_src = compile_prog(argv[1])
-    if compiled_src is None:
-        # compilation failed, print an error and exit
-        print("invalid code, cannot parse structs")
-        exit(1)
+    # compilation check
+    if args.check:
+        compiled_src = compile_prog(args.file)
+        if compiled_src is None:
+            # compilation failed, print an error and exit
+            print("invalid code, cannot parse structs")
+            sys.exit(1)
 
-    structs = parse_structs_from_file(argv[1])
+    structs = parse_structs_from_file(args.file)
 
     # print structs, members, and their sizes
     for entry in structs:
