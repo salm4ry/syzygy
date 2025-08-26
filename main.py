@@ -5,8 +5,9 @@ Parse a C file's structs and output size and alignment information
 
 import ctypes
 import logging
+from sys import argv
 from parse_struct import Struct, extract_type_with_struct
-# from compile import compile_prog
+from compile import compile_prog
 
 # set up logging
 logging.basicConfig()
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 # logger.setLevel(logging.DEBUG)  # set log level for main
 
 
-def extract_structs(filename: str):
+def extract_structs(src: str):
     """Extract struct text from a C file
 
     Return:
@@ -23,8 +24,8 @@ def extract_structs(filename: str):
     struct_dict = {}
     data = None
 
-    with open(filename, 'r', encoding="ascii") as src:
-        data = src.readlines()
+    with open(src, 'r', encoding="ascii") as f:
+        data = f.readlines()
 
     line = ""
     line_num = 0
@@ -73,17 +74,17 @@ def extract_structs(filename: str):
 
 def parse_structs_from_file(filename):
     """Extract and parse structs from a C file"""
-    structs = [Struct(key, val) for key, val in
-               extract_structs(filename).items()]
+    struct_list = [Struct(key, val) for key, val in
+                   extract_structs(filename).items()]
 
-    for struct in structs:
+    for struct in struct_list:
         # handle structs with members that depend on other structs
         # i.e. one or more of its members have type == None
         if struct.dtype is None:
             for member in struct.members:
                 if member.dtype is None:
                     # find struct dependency (first match)
-                    dep_struct = next(x for x in structs if x.name ==
+                    dep_struct = next(x for x in struct_list if x.name ==
                                       member.dep_struct)
 
                     logger.debug("%s.%s: found %s", struct.name, member.name,
@@ -100,10 +101,11 @@ def parse_structs_from_file(filename):
             # members are defined
             struct.dtype = struct.to_structure()
 
-    return structs
+    return struct_list
 
 
 def print_struct_with_sizes(struct: Struct):
+    """Print struct size and sizes of its members"""
     print(f"{struct.name}: "
           f"{[ctypes.sizeof(member.dtype) for member in struct.members]}"
           f" -> {ctypes.sizeof(struct.dtype)}, "
@@ -133,10 +135,20 @@ def visualise_struct(struct: Struct):
 
 
 if __name__ == "__main__":
-    structs = parse_structs_from_file("test_struct.c")
+    if len(argv) < 2:
+        print(f"usage: {argv[0]} <source_file>")
+        exit(1)
+
+    compiled_src = compile_prog(argv[1])
+    if compiled_src is None:
+        # compilation failed, print an error and exit
+        print("invalid code, cannot parse structs")
+        exit(1)
+
+    structs = parse_structs_from_file(argv[1])
 
     # print structs, members, and their sizes
-    for struct in structs:
-        print_struct_with_sizes(struct)
-        visualise_struct(struct)
+    for entry in structs:
+        print_struct_with_sizes(entry)
+        visualise_struct(entry)
         print()
