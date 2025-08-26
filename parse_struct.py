@@ -81,11 +81,11 @@ class Struct:
     def __init__(self, name, members):
         self.name = name
         self.members = [StructMember(x) for x in members]
-        self.structure = None
+        self.dtype = None
 
         # convert to structure if all member data types are defined
         if all(x.dtype is not None for x in self.members):
-            self.structure = self.to_structure()
+            self.dtype = self.to_structure()
 
     def __str__(self):
         res = [f"struct {self.name}: "]
@@ -113,6 +113,6 @@ def extract_type_with_struct(type_str: str, dep_struct: Struct):
 
     for word in type_str:
         if word == dep_struct.name:
-            res = dep_struct.structure
+            res = dep_struct.dtype
 
     return res

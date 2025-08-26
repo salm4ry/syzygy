@@ -29,7 +29,13 @@ def extract_structs(filename: str):
     line = ""
     line_num = 0
 
-    def parse_struct():
+    def extract_members():
+        """Extract struct members from a given position in a C file
+
+        Nonlocal parameters:
+            line: current file line
+            line_num: current file line number
+        """
         nonlocal line, line_num  # defined in the outer function
         struct_lines = []
 
@@ -56,7 +62,7 @@ def extract_structs(filename: str):
         struct_dict[name] = []
 
         line_num += 1
-        struct_dict[name] = parse_struct()
+        struct_dict[name] = extract_members()
         logger.debug("parsed struct %s, line_num = %d",
                      name, line_num)
 
@@ -65,13 +71,54 @@ def extract_structs(filename: str):
     return struct_dict
 
 
+def parse_structs_from_file(filename):
+    """Extract and parse structs from a C file"""
+    structs = [Struct(key, val) for key, val in
+               extract_structs(filename).items()]
+
+    for struct in structs:
+        # handle structs with members that depend on other structs
+        # i.e. one or more of its members have type == None
+        if struct.dtype is None:
+            for member in struct.members:
+                if member.dtype is None:
+                    # find struct dependency (first match)
+                    dep_struct = next(x for x in structs if x.name ==
+                                      member.dep_struct)
+
+                    logger.debug("%s.%s: found %s", struct.name, member.name,
+                                 dep_struct)
+
+                    # set member data type
+                    member.dtype = extract_type_with_struct(member.type_str,
+                                                            dep_struct)
+
+                    logger.debug("%s.%s has type %s", struct.name, member.name,
+                                 member.dtype)
+
+            # finally, get ctypes.Structure type for struct now that all
+            # members are defined
+            struct.dtype = struct.to_structure()
+
+    return structs
+
+
+def print_struct_with_sizes(struct: Struct):
+    print(f"{struct.name}: "
+          f"{[ctypes.sizeof(member.dtype) for member in struct.members]}"
+          f" -> {ctypes.sizeof(struct.dtype)}, "
+          f"alignment {ctypes.alignment(struct.dtype)}")
+    for member in struct.members:
+        print(f"    {member}, size {ctypes.sizeof(member.dtype)}")
+
+
 def visualise_struct(struct: Struct):
     """Visualise struct member alignment
 
-        --- = filled bytes
-        xxx = unused bytes
+    --- = filled bytes
+    xxx = unused bytes
     """
-    alignment = ctypes.alignment(struct.structure)
+    alignment = ctypes.alignment(struct.dtype)
 
     print("|", end="")
     for member in struct.members:
@@ -86,46 +133,10 @@ def visualise_struct(struct: Struct):
 
 
 if __name__ == "__main__":
-    # TODO tidy up struct parsing from file into more functions
-    # -> maybe a class for a given file?
-    # would allow struct dependencies to be handled automatically instead of in
-    # main()
-
-    structs = [Struct(key, val)
-               for key, val in extract_structs("test_struct.c").items()]
-    struct_classes = []
-
-    for struct in structs:
-        if struct.structure is not None:
-            struct_classes.append(struct.structure)
-        else:
-            for member in struct.members:
-                if member.dtype is None:
-                    # find required struct
-                    required_struct = [x for x in structs if x.name ==
-                                       member.dep_struct][0]
-
-                    logger.debug("%s.%s: found %s", struct.name, member.name,
-                                 required_struct)
-
-                    member.dtype = extract_type_with_struct(member.type_str,
-                                                            required_struct)
-
-                    logger.debug("%s.%s has type %s", struct.name, member.name,
-                                 member.dtype)
-
-            struct.structure = struct.to_structure()
-            struct_classes.append(struct.structure)
+    structs = parse_structs_from_file("test_struct.c")
 
     # print structs, members, and their sizes
     for struct in structs:
-        print(f"{struct.name}: "
-              f"{[ctypes.sizeof(member.dtype) for member in struct.members]}"
-              f" -> {ctypes.sizeof(struct.structure)}, "
-              f"alignment {ctypes.alignment(struct.structure)}")
-        for member in struct.members:
-            print(f"    {member} -> {member.dtype} "
-                  f"({ctypes.sizeof(member.dtype)})")
-
+        print_struct_with_sizes(struct)
         visualise_struct(struct)
         print()
