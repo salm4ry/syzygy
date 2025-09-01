@@ -101,6 +101,18 @@ class Struct:
                     {"_fields_": [member.to_tuple() for member in
                                   self.members]})
 
+    def to_json(self):
+        """Convert struct to JSON object"""
+        data = {}
+
+        data["name"] = self.name
+        data["alignment"] = ctypes.alignment(self.dtype)
+        data["members"] = [{"name": member.name, "size":
+                            ctypes.sizeof(member.dtype)} for member in
+                           self.members]
+
+        return data
+
 
 def extract_type_with_struct(type_str: str, dep_struct: Struct):
     """Extract ctypes data type from a string and the struct it depends on
