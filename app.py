@@ -1,9 +1,11 @@
 """syzygy web application"""
 
 from flask import Flask, jsonify
+from flask_cors import CORS, cross_origin
 import syzygy
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route('/')
@@ -17,6 +19,7 @@ def hello():
 # TODO use POST request and user-submitted C code
 # @app.route('/view', methods=['POST'])
 @app.route('/view', methods=['GET', 'POST'])
+@cross_origin()
 def struct_info():
     """Return JSON object describing structs in provided code"""
     # TODO get code as argument
@@ -27,3 +30,7 @@ def struct_info():
         res.append(entry.to_json())
 
     return jsonify(res)
+
+
+if __name__ == "__main__":
+    app.run(debug=True, port=8000)
