@@ -18,17 +18,13 @@ logger = logging.getLogger(__name__)
 # logger.setLevel(logging.DEBUG)  # set log level for main
 
 
-def extract_structs(src: str):
-    """Extract struct text from a C file
+def extract_structs(data: str):
+    """Extract struct text from a C string (array of file lines)
 
     Return:
         struct_dict (dict): struct name:members dictionary
     """
     struct_dict = {}
-    data = None
-
-    with open(src, 'r', encoding="ascii") as f:
-        data = f.readlines()
 
     line = ""
     line_num = 0
@@ -75,11 +71,7 @@ def extract_structs(src: str):
     return struct_dict
 
 
-def parse_structs_from_file(filename):
-    """Extract and parse structs from a C file"""
-    struct_list = [Struct(key, val) for key, val in
-                   extract_structs(filename).items()]
-
+def fix_struct_deps(struct_list):
     for struct in struct_list:
         # handle structs with members that depend on other structs
         # i.e. one or more of its members have type == None
@@ -103,6 +95,29 @@ def parse_structs_from_file(filename):
             # finally, get ctypes.Structure type for struct now that all
             # members are defined
             struct.dtype = struct.to_structure()
+
+    return struct_list
+
+
+def parse_structs_from_file(filename):
+    """Extract and parse structs from a C file"""
+
+    with open(filename, 'r', encoding="ascii") as f:
+        data = f.readlines()
+
+    struct_list = [Struct(key, val) for key, val in
+                   extract_structs(data).items()]
+
+    struct_list = fix_struct_deps(struct_list)
+
+    return struct_list
+
+
+def parse_structs(data: str):
+    struct_list = [Struct(key, val) for key, val in
+                   extract_structs(data).items()]
+
+    struct_list = fix_struct_deps(struct_list)
 
     return struct_list
 
