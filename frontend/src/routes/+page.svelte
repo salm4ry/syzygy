@@ -1,17 +1,11 @@
 <script lang="ts">
 import "../app.css";
 
-import { onMount } from 'svelte';
 import CodeInput from "$lib/CodeInput.svelte";
+import RenderStruct from "$lib/RenderStruct.svelte";
 
 let data: JSON;
 </script>
-
-<style>
-p {
-    font-family: monospace;
-}
-</style>
 
 <!-- TODO explain the application
 <article class="prose">
@@ -23,8 +17,6 @@ p {
 		<div class="col-span-1">
 			<CodeInput bind:data/>
 		</div>
-		<div class="card bg-primary text-primary-content col-span-1">
-			<p class="m-2">{JSON.stringify(data, null, "\t")}</p>
-		</div>
+		<RenderStruct jsonData={data}/>
 	</div>
 </div>
