@@ -1,9 +1,9 @@
 """syzygy web application"""
 
-from os import environ
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 import syzygy
+import env
 
 DEFAULT_PORT = 8000
 DEFAULT_DEBUG = True
@@ -21,8 +21,7 @@ def hello():
 
 
 # TODO use POST request and user-submitted C code
-# @app.route('/view', methods=['POST'])
-@app.route('/view', methods=['GET', 'POST'])
+@app.route('/view', methods=['POST'])
 @cross_origin()
 def struct_info():
     """Return JSON object describing structs in provided code"""
@@ -43,7 +42,6 @@ def struct_info():
 if __name__ == "__main__":
     # get port number (integer), and whether to enable debug mode (boolean)
     # from environment variables
-    port = int(environ.get("PORT", DEFAULT_PORT))
-    debug = environ.get("DEBUG", DEFAULT_DEBUG).lower() \
-        in ("yes", "y", "true", "1", "t")
+    port = env.get_int("PORT", DEFAULT_PORT)
+    debug = env.get_bool("DEBUG", DEFAULT_DEBUG)
     app.run(debug=debug, port=port)
