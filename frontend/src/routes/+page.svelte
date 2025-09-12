@@ -17,6 +17,17 @@ let data: JSON;
 		<div class="col-span-1">
 			<CodeInput bind:data/>
 		</div>
-		<RenderStruct jsonData={data}/>
+		<!-- split json array into individual elements and iterate over it -->
+		<div class="col-span-1 grid grid-cols-1 gap-2">
+			{#if data}
+				{#each Object.entries(data) as struct}
+					<RenderStruct jsonData={struct}/>
+				{/each}
+			{:else}
+				<!-- no struct data to display: placeholder -->
+				<div class="card bg-base-300 h-full p-2">
+				</div>
+			{/if}
+		</div>
 	</div>
 </div>

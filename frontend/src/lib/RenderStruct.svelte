@@ -12,6 +12,6 @@ let { jsonData } = $props();
 <!-- TODO draw shapes
 Basic SVG elements: https://datavisualizationwithsvelte.com/basics/basic-shapes
 -->
-<div class="card bg-base-300 col-span-1">
+<div class="card bg-base-300">
 	<p class="m-2">{JSON.stringify(jsonData, null, "\t")}</p>
 </div>
