@@ -1,8 +1,12 @@
 """syzygy web application"""
 
+from os import environ
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 import syzygy
+
+DEFAULT_PORT = 8000
+DEFAULT_DEBUG = True
 
 app = Flask(__name__)
 CORS(app)
@@ -37,4 +41,9 @@ def struct_info():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8000)
+    # get port number (integer), and whether to enable debug mode (boolean)
+    # from environment variables
+    port = int(environ.get("PORT", DEFAULT_PORT))
+    debug = environ.get("DEBUG", DEFAULT_DEBUG).lower() \
+        in ("yes", "y", "true", "1", "t")
+    app.run(debug=debug, port=port)
