@@ -20,8 +20,9 @@ let data: JSON;
 		<!-- split json array into individual elements and iterate over it -->
 		<div class="col-span-1 grid grid-cols-1 gap-2">
 			{#if data}
-				{#each Object.entries(data) as struct}
-					<RenderStruct jsonData={struct}/>
+				{#each Object.entries(data) as entry}
+					<!-- trim leading index -->
+					<RenderStruct jsonData={entry[1]}/>
 				{/each}
 			{:else}
 				<!-- no struct data to display: placeholder -->
