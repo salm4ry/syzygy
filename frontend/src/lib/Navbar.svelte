@@ -12,7 +12,7 @@
 <div class="navbar sticky bg-base-300 shadow-sm rounded-b">
 
   <div class="flex-1">
-    <a class="btn btn-ghost text-xl" href="/">syzygy 🪐</a>
+    <a class="btn btn-ghost text-xl text-primary" href="/">syzygy 🪐</a>
   </div>
 
 </div>
