@@ -16,7 +16,7 @@ let { jsonData } = $props();
 let svgData: Array<Rect> = $state([]);
 
 onMount(() => {
-	// TODO define SVG data
+	// define SVG data
 	let currentPos = 0;
 
 	for (const member of jsonData.members) {
@@ -48,9 +48,6 @@ onMount(() => {
 });
 </script>
 
-<!-- TODO draw shapes
-Basic SVG elements: https://datavisualizationwithsvelte.com/basics/basic-shapes
--->
 <div class="card bg-base-300">
 	<h2 class="card-title m-2">{jsonData.name}</h2>
 	<p class="m-2">alignment: {jsonData.alignment}</p>

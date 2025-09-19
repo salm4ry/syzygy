@@ -18,3 +18,11 @@ Install required Python libraries:
 ```bash
 pip install -r requirements.txt
 ```
+
+## To do
+- [ ] document environment variables
+- [ ] Makefile for running web app
+- [ ] improve rendered SVGs
+    - [ ] scale to boxes
+    - [ ] randomise member colours
+    - [ ] member name, type info on hover
