@@ -20,7 +20,6 @@ def hello():
     return 'Hello, World!'
 
 
-# TODO use POST request and user-submitted C code
 @app.route('/view', methods=['POST'])
 @cross_origin()
 def struct_info():

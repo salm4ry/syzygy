@@ -87,7 +87,8 @@ def fix_struct_deps(struct_list):
 
                     # set member data type
                     member.dtype = extract_type_with_struct(member.type_str,
-                                                            dep_struct)
+                                                            dep_struct,
+                                                            member.length)
 
                     logger.debug("%s.%s has type %s", struct.name, member.name,
                                  member.dtype)
@@ -142,7 +143,7 @@ def visualise_struct(struct: Struct):
 
     print("|", end="")
     for member in struct.members:
-        member_size = ctypes.sizeof(member.dtype)
+        member_size = ctypes.sizeof(member.dtype) * member.length
         if member_size == alignment:
             print(member_size * "-", end="|")
         else:

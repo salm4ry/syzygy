@@ -5,6 +5,8 @@ import logging
 from pydoc import locate
 
 ASTERISK = "*"
+ARRAY_START = "["
+ARRAY_END = "]"
 
 # set up logging
 logging.basicConfig()
@@ -16,17 +18,27 @@ def extract_type(type_str: str):
     """Extract ctypes data type from a string
 
     Return:
-        parsed type on success
-        None on error (e.g. struct required)
+        parsed type and number of elements (in order to handle arrays)
+            on success
+        (None, x) on error (e.g. struct required)
     """
+    num_elems = 1
     # locate data type from name
     res = locate(f"ctypes.c_{type_str.split()[0]}")
 
     # treat all pointers as void pointers (same size)
     if ASTERISK in type_str:
         res = ctypes.c_voidp
+    elif all(x in type_str for x in [ARRAY_START, ARRAY_END]):
+        # type is an array: find the length (characters between the two
+        # brackets)
+        start_pos = type_str.find(ARRAY_START)
+        end_pos = type_str.find(ARRAY_END)
 
-    return res
+        # len(ARRAY_START):end_pos
+        num_elems = type_str[start_pos + len(ARRAY_START):end_pos].strip()
+
+    return (res, int(num_elems))
 
 
 class StructMember:
@@ -52,7 +64,8 @@ class StructMember:
         self.type_str = list(filter(None, (self.type_str + [ASTERISK *
                                     asterisk_count])))
 
-        self.dtype = extract_type(" ".join(self.type_str))
+        self.dtype, self.length = extract_type(
+                " ".join(self.type_str + [self.name]))
         logger.debug("name = %s, type_str = %s, dtype = %s",
                      self.name, self.type_str, self.dtype)
 
@@ -60,6 +73,8 @@ class StructMember:
         if self.dtype is None:
             self.dep_struct = ("".join(self.type_str)).replace(
                     "struct", "")
+            # strip square brackets from array
+            self.dep_struct = self.dep_struct.split(ARRAY_START, 1)[0]
             logger.debug("member %s needs %s", self.name, self.dep_struct)
 
     def __str__(self):
@@ -97,6 +112,7 @@ class Struct:
 
     def to_structure(self):
         """Convert struct to ctypes.Structure"""
+        logger.debug([member.__str__() for member in self.members])
         return type(self.name, (ctypes.Structure,),
                     {"_fields_": [member.to_tuple() for member in
                                   self.members]})
@@ -109,18 +125,20 @@ class Struct:
         data["size"] = ctypes.sizeof(self.dtype)
         data["alignment"] = ctypes.alignment(self.dtype)
         data["members"] = [{"name": member.name, "size":
-                            ctypes.sizeof(member.dtype)} for member in
-                           self.members]
+                            ctypes.sizeof(member.dtype) * member.length}
+                           for member in self.members]
 
         return data
 
 
-def extract_type_with_struct(type_str: str, dep_struct: Struct):
+def extract_type_with_struct(type_str: str, dep_struct: Struct, length: int):
     """Extract ctypes data type from a string and the struct it depends on
 
     Parameters:
         type_str (str): C data type string
         required_struct (Struct): struct the type depends on
+        length (int): number of elements the member consists of
+            (handle arrays of structs)
     """
     res = None
 
