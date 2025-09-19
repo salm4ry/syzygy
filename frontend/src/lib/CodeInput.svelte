@@ -1,13 +1,18 @@
 <script lang="ts">
+import {
+	PUBLIC_FLASK_HOST,
+	PUBLIC_FLASK_PORT
+} from '$env/static/public';
+
 export let data;
 
 async function submitCode(event: Event) {
 	const form = event.target as HTMLFormElement;
 	const code = new FormData(form).get("code") as string;
 
-	// submit code to Flask server
-	// TODO environment variable for port number?
-	const response = await fetch('http://localhost:8000/view', {
+	// submit code to Flask server (retrieve host and port from environment
+	const response = await fetch(
+	`${PUBLIC_FLASK_HOST}:${PUBLIC_FLASK_PORT}/view`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ code: code })
