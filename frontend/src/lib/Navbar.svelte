@@ -6,6 +6,10 @@
       width: 100% !important;
       z-index: 99 !important;
   }
+
+  .btn {
+      font-weight: 900;
+  }
 </style>
 
 <!-- rounded-b: only round bottom -->

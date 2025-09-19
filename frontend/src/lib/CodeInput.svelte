@@ -28,7 +28,7 @@ textarea {
 	min-height: 20rem;
 	field-sizing: content;
 	padding: 0.5em 1em;
-	font-family: monospace;
+	font-family: 'Roboto Mono', monospace;
 }
 
 ::placeholder {

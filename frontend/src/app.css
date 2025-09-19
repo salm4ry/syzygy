@@ -6,3 +6,7 @@
 };
 
 @plugin "./macchiato.ts";
+
+* {
+	font-family: 'Roboto Flex', 'Roboto', sans-serif;
+}

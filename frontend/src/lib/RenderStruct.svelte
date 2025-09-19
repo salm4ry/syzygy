@@ -48,6 +48,12 @@ onMount(() => {
 });
 </script>
 
+<style>
+.card-title {
+	font-family: 'Roboto Mono', monospace;
+}
+</style>
+
 <div class="card bg-base-300">
 	<h2 class="card-title m-2">{jsonData.name}</h2>
 	<p class="m-2">alignment: {jsonData.alignment}</p>
