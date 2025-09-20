@@ -60,6 +60,8 @@ PUBLIC_FLASK_PORT=8000
 ## To do
 - [x] document environment variables
 - [ ] Makefile for running web app
+    - [x] dev
+    - [ ] prod
 - [ ] improve rendered SVGs
     - [ ] scale to boxes
     - [x] randomise member colours
