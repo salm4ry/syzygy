@@ -3,10 +3,8 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 import syzygy
+import defaults
 import env
-
-DEFAULT_PORT = 8000
-DEFAULT_DEBUG = True
 
 app = Flask(__name__)
 CORS(app)
@@ -41,6 +39,6 @@ def struct_info():
 if __name__ == "__main__":
     # get port number (integer), and whether to enable debug mode (boolean)
     # from environment variables
-    port = env.get_int("PORT", DEFAULT_PORT)
-    debug = env.get_bool("DEBUG", DEFAULT_DEBUG)
+    port = env.get_int("PORT", defaults.PORT)
+    debug = env.get_bool("DEBUG", defaults.DEBUG)
     app.run(debug=debug, port=port)
