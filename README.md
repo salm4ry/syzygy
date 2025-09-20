@@ -19,10 +19,48 @@ Install required Python libraries:
 pip install -r requirements.txt
 ```
 
+## Usage
+
+### Command-Line Tool (`syzygy.py`)
+
+See `--help` for usage instructions.
+
+## Configuration
+
+### Backend (Flask `app.py`)
+
+The backend uses the following shell environment variables:
+
+| name | description | required |
+| -- | -- | -- |
+| `PORT` | server port | N: default = `defaults.PORT` |
+| `DEBUG` | enable/disable debug logging | N: default = `defaults.DEBUG` |
+
+
+### Frontend (SvelteKit `./frontend`)
+
+The `syzygy` frontend uses the following environment variables (stored in `frontend/.env`):
+
+| name | description | required |
+| -- | -- | -- |
+| `PUBLIC_FLASK_HOST` | Flask server host | Y |
+| `PUBLIC_FLASK_PORT` | Flask server port | Y |
+
+
+where the Flask server is the machine running `app.py`.
+
+Example configuration (Flask server on port `8000` of the same host as the frontend):
+
+```bash
+# Flask server on port 8000 of the same host as the frontend
+PUBLIC_FLASK_HOST="http://localhost"
+PUBLIC_FLASK_PORT=8000
+```
+
 ## To do
-- [ ] document environment variables
+- [x] document environment variables
 - [ ] Makefile for running web app
 - [ ] improve rendered SVGs
     - [ ] scale to boxes
-    - [ ] randomise member colours
+    - [x] randomise member colours
     - [ ] member name, type info on hover
