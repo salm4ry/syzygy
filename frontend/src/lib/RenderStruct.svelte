@@ -1,14 +1,11 @@
 <script lang="ts">
 import { onMount } from "svelte";
-import StructImage from "./StructImage.svelte";
-
-const scaleFactor = 10;
 
 interface Rect {
 	x: number,
 	y: number,
 	width: number,
-	height: number,
+	height: string,
 	fill: string
 };
 
@@ -19,15 +16,55 @@ let accentColours = ["#f5bde6", "#c6a0f6", "#ed8796", "#ee99a0",
 
 const paddingColour = "#a5adcb";  // subtext0
 const borderColour = "#363a4f";  // surface0
+const strokeWidth = 0.1;  // line width
 
 // take JSON data from server as input
 let { jsonData } = $props();
-let svgData: Array<Rect> = $state([]);
+let svgData = $derived(buildSvg());  // SVG data derived from JSON data in buildSvg() function
+
+function buildSvg() {
+	let currentPos = 0;
+	let res: Array<Rect> = [];
+
+	for (const member of jsonData.members) {
+		res = [...res, {
+			x: currentPos,
+			y: 0,
+			width: member.size,
+			height: "50%",
+			fill: accentColours[currentPos % accentColours.length]
+		}];
+
+		currentPos += member.size;
+
+		if (member.size < jsonData.alignment) {
+			let extra = jsonData.alignment - member.size;
+
+			res = [...res, {
+				x: currentPos,
+				y: 0,
+				width: 0,
+				height: "50%",
+				fill: borderColour
+			}];
+
+			res = [...res, {
+				x: currentPos,
+				y: 0,
+				width: extra,
+				height: "50%",
+				fill: paddingColour
+			}];
+
+			currentPos += extra;
+		}
+
+	}
+
+	return {entries: res, totalWidth: currentPos};
+}
 
 onMount(() => {
-	// define SVG data
-	let currentPos = 0;
-
 	/*
 	shuffle accent colour order (Fisher-Yates shuffle/Knuth shuffle): https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#JavaScript_implementation
 
@@ -41,32 +78,7 @@ onMount(() => {
 		accentColours[j], accentColours[i]];
 	}
 
-	for (const member of jsonData.members) {
-		svgData = [...svgData, {
-			x: currentPos * scaleFactor,
-			y: 0,
-			height: scaleFactor,
-			width: member.size * scaleFactor,
-			fill: accentColours[currentPos % accentColours.length]
-		}];
-
-		currentPos += member.size;
-
-		if (member.size < jsonData.alignment) {
-			let extra = jsonData.alignment - member.size;
-
-			// TODO remove magic constants
-			svgData = [...svgData, {
-				x: currentPos * scaleFactor,
-				y: 0,
-				height: scaleFactor,
-				width: extra * scaleFactor,
-				fill: paddingColour
-			}];
-
-			currentPos += extra;
-		}
-	}
+	buildSvg();
 });
 </script>
 
@@ -80,6 +92,22 @@ onMount(() => {
 	<h2 class="card-title m-2">{jsonData.name}</h2>
 	<p class="m-2">alignment: {jsonData.alignment}</p>
 	<!-- TODO scale SVG to fit in box -->
-	<StructImage size={jsonData.size} scaleFactor={scaleFactor}
-		svgData={svgData}/>
+	<svg class="m-2" height="auto" width="90%"
+		viewBox="0 0 10 10">
+	{#each svgData.entries as s}
+		{#if s.fill == borderColour}
+			<!-- border between member bytes and their padding -->
+			<line x1={s.x} x2={s.x} y1=0 y2={s.height}
+				style="stroke-width:{strokeWidth};stroke:{borderColour}"/>
+		{:else}
+			<rect x={s.x} y={s.y} width={s.width} height={s.height}
+			      style="fill:{s.fill}"/>
+			{#if s.fill != paddingColour}
+				<!-- border between struct members -->
+				<line x1={s.x} x2={s.x} y1=0 y2={s.height}
+					style="stroke-width:{strokeWidth};stroke:{borderColour}"/>
+			{/if}
+		{/if}
+	{/each}
+	</svg>
 </div>
