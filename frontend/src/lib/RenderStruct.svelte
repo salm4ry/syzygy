@@ -86,11 +86,17 @@ onMount(() => {
 .card-title {
 	font-family: 'Roboto Mono', monospace;
 }
+
+.struct {
+	font-family: 'Roboto Mono', monospace;
+	font-weight: normal;
+}
 </style>
 
 <div class="card bg-base-300">
-	<h2 class="card-title m-2">{jsonData.name}</h2>
-	<p class="m-2">alignment: {jsonData.alignment}</p>
+	<h2 class="card-title m-2"><span class="struct">struct</span> {jsonData.name}</h2>
+	<p class="ml-2"><strong>size:</strong> {jsonData.size}</p>
+	<p class="ml-2"><strong>alignment:</strong> {jsonData.alignment}</p>
 	<!-- TODO scale SVG to fit in box -->
 	<svg class="m-2" height="auto" width="90%"
 		viewBox="0 0 10 10">
