@@ -15,7 +15,6 @@ from args import init_arg_parser
 # set up logging
 logging.basicConfig()
 logger = logging.getLogger(__name__)
-# logger.setLevel(logging.DEBUG)  # set log level for main
 
 
 def extract_structs(data: str):
@@ -157,6 +156,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     init_arg_parser(parser)
     args = parser.parse_args()
+
+    # debug logging
+    if args.debug:
+        logger.setLevel(logging.DEBUG)  # set log level for main
 
     # compilation check
     if args.check:
