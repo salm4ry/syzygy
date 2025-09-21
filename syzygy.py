@@ -138,18 +138,30 @@ def visualise_struct(struct: Struct):
     --- = filled bytes
     xxx = unused bytes
     """
-    alignment = ctypes.alignment(struct.dtype)
+    struct_alignment = ctypes.alignment(struct.dtype)
+    struct_size = ctypes.sizeof(struct.dtype)
+    byte_pos = 0
 
-    print("|", end="")
     for member in struct.members:
+        member_alignment = ctypes.alignment(member.dtype)
         member_size = ctypes.sizeof(member.dtype) * member.length
-        if member_size == alignment:
-            print(member_size * "-", end="|")
-        else:
-            print("".join([member_size * "-",
-                           (alignment - member_size) * "x"]),
-                  end="|")
-    print()
+        padding = 0
+
+        if byte_pos % member_alignment != 0:
+            # calculate padding size
+            padding = member_alignment - (byte_pos % member_alignment)
+        print("".join([padding * "x", "|", member_size * "-"]), end="")
+
+        byte_pos += padding + member_size
+
+    if byte_pos % struct_alignment != 0:
+        padding = struct_alignment - (byte_pos % struct_alignment)
+        print(padding * "x", end="")
+        byte_pos += padding
+    print("|")
+
+    logger.debug("rendered %d bytes, expected %d", byte_pos, struct_size)
+    assert byte_pos == struct_size
 
 
 if __name__ == "__main__":
