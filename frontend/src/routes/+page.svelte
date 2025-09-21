@@ -7,9 +7,6 @@ import RenderStruct from "$lib/RenderStruct.svelte";
 let data: JSON;
 </script>
 
-<style>
-</style>
-
 <!-- TODO add memory layout colour code -->
 <div class="center">
 <article class="prose mb-4">
