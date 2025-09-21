@@ -12,53 +12,87 @@ interface Rect {
 
 let memberColours = accentColours;
 
-const strokeWidth = 0.1;
-const rectHeight = "50%";
+const strokeWidth = 0.3;
+const rectHeight = "100%";
 
 // take JSON data from server as input
 let { jsonData } = $props();
 let svgData = $derived(buildSvg());  // SVG data derived from JSON data in buildSvg() function
 
+function buildBorder(position: number) {
+	return {
+		x: position,
+		y: 0,
+		width: 0,
+		height: rectHeight,
+		fill: borderColour
+	}
+}
+
+function buildRect(position: number, memberIndex: number, width: number) {
+	return {
+		x: position,
+		y: 0,
+		width: width,
+		height: rectHeight,
+		fill: memberColours[memberIndex % memberColours.length]
+	}
+}
+
+function buildPadding(position: number, width: number) {
+	return {
+		x: position,
+		y: 0,
+		width: width,
+		height: rectHeight,
+		fill: paddingColour
+	}
+}
+
 function buildSvg() {
-	let currentPos = 0;
+	let bytePos = 0;
 	let res: Array<Rect> = [];
+	let padding = 0;
 
-	for (const member of jsonData.members) {
-		res = [...res, {
-			x: currentPos,
-			y: 0,
-			width: member.size,
-			height: rectHeight,
-			fill: memberColours[currentPos % memberColours.length]
-		}];
+	for (let i = 0; i < jsonData.members.length; i++) {
+		let currentMember = jsonData.members[i];
+		if (bytePos % currentMember.alignment != 0) {
+			// calculate padding size
+			padding = currentMember.alignment - (bytePos % currentMember.alignment);
 
-		currentPos += member.size;
+			// add border
+			res = [...res, buildBorder(bytePos)];
 
-		if (member.size < jsonData.alignment) {
-			let extra = jsonData.alignment - member.size;
-
-			res = [...res, {
-				x: currentPos,
-				y: 0,
-				width: 0,
-				height: rectHeight,
-				fill: borderColour
-			}];
-
-			res = [...res, {
-				x: currentPos,
-				y: 0,
-				width: extra,
-				height: rectHeight,
-				fill: paddingColour
-			}];
-
-			currentPos += extra;
+			// add padding rectangle
+			res = [...res, buildPadding(bytePos, padding)];
+			bytePos += padding;
 		}
 
+		// add member border
+		res = [...res, buildBorder(bytePos)];
+
+		// add member rectangle
+		res = [...res, buildRect(bytePos, i, currentMember.size)];
+
+		bytePos += currentMember.size;
 	}
 
-	return {entries: res, totalWidth: currentPos};
+	if (bytePos % jsonData.alignment != 0) {
+		padding = jsonData.alignment - (bytePos % jsonData.alignment);
+
+		res = [...res, buildBorder(bytePos)];
+		res = [...res, buildPadding(bytePos, padding)];
+
+		bytePos += padding;
+	}
+
+	// final border
+	res = [...res, buildBorder(bytePos)];
+
+	console.assert(bytePos == jsonData.size,
+		`expected struct size ${jsonData.size}, got ${bytePos}`);
+
+	return {entries: res, totalWidth: jsonData.size};
 }
 
 onMount(() => {
@@ -88,6 +122,7 @@ onMount(() => {
 	font-family: 'Roboto Mono', monospace;
 	font-weight: normal;
 }
+
 </style>
 
 <div class="card bg-base-300">
@@ -96,8 +131,7 @@ onMount(() => {
 	<p class="ml-2"><strong>alignment:</strong> {jsonData.alignment}</p>
 	<!-- TODO scale SVG to fit in box -->
 	<div class="center">
-		<svg class="m-2" height="auto" width="100%"
-			viewBox="0 0 {svgData.totalWidth} 5">
+		<svg class="m-2 w-48 w-full" viewBox="0 0 {svgData.totalWidth} {svgData.totalWidth/5}">
 		{#each svgData.entries as s}
 			{#if s.fill == borderColour}
 				<!-- border between member bytes and their padding -->
