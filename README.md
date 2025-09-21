@@ -19,11 +19,27 @@ Install required Python libraries:
 pip install -r requirements.txt
 ```
 
+Install frontend dependencies:
+
+```bash
+cd frontend && npm install
+```
+
 ## Usage
 
 ### Command-Line Tool (`syzygy.py`)
 
 See `--help` for usage instructions.
+
+### Web application
+
+`Makefile` rules:
+
+| rule | description |
+| -- | -- |
+| `dev-backend` | run backend in dev mode |
+| `dev-frontend` | run frontend in dev mode |
+
 
 ## Configuration
 
