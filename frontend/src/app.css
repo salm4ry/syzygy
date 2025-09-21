@@ -10,3 +10,8 @@
 * {
 	font-family: 'Roboto Flex', 'Roboto', sans-serif;
 }
+
+.center {
+	margin: auto;  /* horizontally center */
+	width: 50%;
+}

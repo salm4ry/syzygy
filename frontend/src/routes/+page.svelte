@@ -8,10 +8,6 @@ let data: JSON;
 </script>
 
 <style>
-.center {
-	margin: auto;  /* horizontally center */
-	width: 50%;
-}
 </style>
 
 <!-- TODO add memory layout colour code -->

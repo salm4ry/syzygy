@@ -98,22 +98,24 @@ onMount(() => {
 	<p class="ml-2"><strong>size:</strong> {jsonData.size}</p>
 	<p class="ml-2"><strong>alignment:</strong> {jsonData.alignment}</p>
 	<!-- TODO scale SVG to fit in box -->
-	<svg class="m-2" height="auto" width="90%"
-		viewBox="0 0 10 10">
-	{#each svgData.entries as s}
-		{#if s.fill == borderColour}
-			<!-- border between member bytes and their padding -->
-			<line x1={s.x} x2={s.x} y1=0 y2={s.height}
-				style="stroke-width:{strokeWidth};stroke:{borderColour}"/>
-		{:else}
-			<rect x={s.x} y={s.y} width={s.width} height={s.height}
-			      style="fill:{s.fill}"/>
-			{#if s.fill != paddingColour}
-				<!-- border between struct members -->
+	<div class="center">
+		<svg class="m-2" height="auto" width="100%"
+			viewBox="0 0 {svgData.totalWidth} 5">
+		{#each svgData.entries as s}
+			{#if s.fill == borderColour}
+				<!-- border between member bytes and their padding -->
 				<line x1={s.x} x2={s.x} y1=0 y2={s.height}
 					style="stroke-width:{strokeWidth};stroke:{borderColour}"/>
+			{:else}
+				<rect x={s.x} y={s.y} width={s.width} height={s.height}
+				      style="fill:{s.fill}"/>
+				{#if s.fill != paddingColour}
+					<!-- border between struct members -->
+					<line x1={s.x} x2={s.x} y1=0 y2={s.height}
+						style="stroke-width:{strokeWidth};stroke:{borderColour}"/>
+				{/if}
 			{/if}
-		{/if}
-	{/each}
-	</svg>
+		{/each}
+		</svg>
+	</div>
 </div>
