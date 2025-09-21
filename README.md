@@ -65,4 +65,5 @@ PUBLIC_FLASK_PORT=8000
 - [ ] improve rendered SVGs
     - [ ] scale to boxes
     - [x] randomise member colours
-    - [ ] member name, type info on hover
+    - [ ] member name, type info on hover: [DaisyUI tooltip](https://daisyui.com/components/tooltip/#tooltip-with-tooltip-content)
+- [ ] improve test cases (currently in `test_struct.c`)
