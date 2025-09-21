@@ -1,5 +1,6 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import { accentColours as accentColours, paddingColour, borderColour } from "$lib/colours";
 
 interface Rect {
 	x: number,
@@ -9,14 +10,10 @@ interface Rect {
 	fill: string
 };
 
-// all accent colours except lavender (primary)
-let accentColours = ["#f5bde6", "#c6a0f6", "#ed8796", "#ee99a0",
-	"#f5a97f", "#eed49f", "#a6da95", "#8bd5ca",
-	"#91d7e3", "#7dc4e4", "#8aadf4"];
+let memberColours = accentColours;
 
-const paddingColour = "#a5adcb";  // subtext0
-const borderColour = "#363a4f";  // surface0
-const strokeWidth = 0.1;  // line width
+const strokeWidth = 0.1;
+const rectHeight = "50%";
 
 // take JSON data from server as input
 let { jsonData } = $props();
@@ -31,8 +28,8 @@ function buildSvg() {
 			x: currentPos,
 			y: 0,
 			width: member.size,
-			height: "50%",
-			fill: accentColours[currentPos % accentColours.length]
+			height: rectHeight,
+			fill: memberColours[currentPos % memberColours.length]
 		}];
 
 		currentPos += member.size;
@@ -44,7 +41,7 @@ function buildSvg() {
 				x: currentPos,
 				y: 0,
 				width: 0,
-				height: "50%",
+				height: rectHeight,
 				fill: borderColour
 			}];
 
@@ -52,7 +49,7 @@ function buildSvg() {
 				x: currentPos,
 				y: 0,
 				width: extra,
-				height: "50%",
+				height: rectHeight,
 				fill: paddingColour
 			}];
 
@@ -72,10 +69,10 @@ onMount(() => {
 	an element until no elements remain (here, by going through the array
 	backwards)
 	*/
-	for (let i = accentColours.length - 1; i > 0; i--) {
+	for (let i = memberColours.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * (i+1));
-		[accentColours[i], accentColours[j]] = [
-		accentColours[j], accentColours[i]];
+		[memberColours[i], memberColours[j]] = [
+		memberColours[j], memberColours[i]];
 	}
 
 	buildSvg();
