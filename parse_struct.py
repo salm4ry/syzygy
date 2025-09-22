@@ -57,7 +57,10 @@ class StructMember:
     Attributes:
         name (str): struct member name
         type_str (str): C data type string
-        dtype (type): ctypes data type derived from type+str
+            (required to fix struct dependencies)
+        dtype (type): ctypes data type derived from type_str
+        length (int): number of elements of type dtype
+        size (int): size of member = size of dtype * length
         dep_struct (str): name of struct dtype depends on (if dtype is None)
     """
 
@@ -114,6 +117,7 @@ class Struct:
     Attributes:
         name (str): struct name
         members (StructMember[]): list of struct members
+        dtype (type): ctypes.Structure data type
     """
 
     def __init__(self, name, members):
@@ -145,7 +149,7 @@ class Struct:
         data = {}
 
         data["name"] = self.name
-        data["size"] = self.size
+        data["size"] = ctypes.sizeof(self.dtype)
         data["alignment"] = ctypes.alignment(self.dtype)
         data["members"] = [{"name": member.name,
                             "size":
