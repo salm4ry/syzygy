@@ -79,7 +79,8 @@ PUBLIC_FLASK_PORT=8000
     - [x] dev
     - [ ] prod
 - [ ] improve rendered SVGs
-    - [ ] scale to boxes
+    - [x] scale to boxes
+    - [ ] add scrollbar if too long
     - [x] randomise member colours
-    - [ ] member name, type info on hover: [DaisyUI tooltip](https://daisyui.com/components/tooltip/#tooltip-with-tooltip-content)
+    - [x] member info on hover: [DaisyUI tooltip](https://daisyui.com/components/tooltip)
 - [ ] improve test cases (currently in `test_struct.c`)
