@@ -84,16 +84,17 @@ def fix_struct_deps(struct_list):
                     logger.debug("%s.%s: found %s", struct.name, member.name,
                                  dep_struct)
 
-                    # set member data type
+                    # set member data type and size
                     member.dtype = extract_type_with_struct(member.type_str,
                                                             dep_struct,
                                                             member.length)
+                    member.size = ctypes.sizeof(member.dtype) * member.length
 
                     logger.debug("%s.%s has type %s", struct.name, member.name,
                                  member.dtype)
 
-            # finally, get ctypes.Structure type for struct now that all
-            # members are defined
+            # finally, get ctypes.Structure type, size, and alignment now
+            # that all members are defined
             struct.dtype = struct.to_structure()
 
     return struct_list
@@ -125,11 +126,11 @@ def parse_structs(data: str):
 def print_struct_with_sizes(struct: Struct):
     """Print struct size and sizes of its members"""
     print(f"{struct.name}: "
-          f"{[ctypes.sizeof(member.dtype) for member in struct.members]}"
+          f"{[member.size for member in struct.members]}"
           f" -> {ctypes.sizeof(struct.dtype)}, "
           f"alignment {ctypes.alignment(struct.dtype)}")
     for member in struct.members:
-        print(f"    {member}, size {ctypes.sizeof(member.dtype)}")
+        print(f"    {member}, size {member.size}")
 
 
 def visualise_struct(struct: Struct):

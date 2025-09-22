@@ -7,11 +7,21 @@ from pydoc import locate
 ASTERISK = "*"
 ARRAY_START = "["
 ARRAY_END = "]"
+SEMICOLON = ";"
 
 # set up logging
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 # logger.setLevel(logging.DEBUG)  # set log level for this module
+
+
+def contains_array(string: str):
+    """Determine if a string contains array characters
+
+    Return:
+        True if array characters present, False otherwise
+    """
+    return all(x in string for x in [ARRAY_START, ARRAY_END])
 
 
 def extract_type(type_str: str):
@@ -29,7 +39,7 @@ def extract_type(type_str: str):
     # treat all pointers as void pointers (same size)
     if ASTERISK in type_str:
         res = ctypes.c_voidp
-    elif all(x in type_str for x in [ARRAY_START, ARRAY_END]):
+    elif contains_array(type_str):
         # type is an array: find the length (characters between the two
         # brackets)
         start_pos = type_str.find(ARRAY_START)
@@ -56,16 +66,24 @@ class StructMember:
         asterisk_count = member_str.count(ASTERISK)
         member_str = member_str.replace(ASTERISK, "")
 
-        # set name (now stripped of asterisks and semicolon at end of line)
-        self.name = member_str.split(" ")[-1].strip(";")
+        # set name (now stripped of asterisks, semicolon at end of line, and
+        # array portion if present)
+        self.name = member_str.split(" ")[-1].strip(SEMICOLON).split(
+                ARRAY_START)[0]
 
         self.type_str = member_str.split(" ")[:-1]
         # append stripped asterisks and remove empty elements
         self.type_str = list(filter(None, (self.type_str + [ASTERISK *
                                     asterisk_count])))
+        # append array square brackets
+        if contains_array(member_str):
+            self.type_str.append(ARRAY_START +
+                                 member_str.split(ARRAY_START)[1].strip(
+                                     SEMICOLON))
 
         self.dtype, self.length = extract_type(
                 " ".join(self.type_str + [self.name]))
+
         logger.debug("name = %s, type_str = %s, dtype = %s",
                      self.name, self.type_str, self.dtype)
 
@@ -76,13 +94,18 @@ class StructMember:
             # strip square brackets from array
             self.dep_struct = self.dep_struct.split(ARRAY_START, 1)[0]
             logger.debug("member %s needs %s", self.name, self.dep_struct)
+        else:
+            # only calculate size if type has been identified (no dependent
+            # struct)
+            self.size = ctypes.sizeof(self.dtype) * self.length
 
     def __str__(self):
         return f"{self.name} ({" ".join(self.type_str)})"
 
     def to_tuple(self):
         """Convert name and data type to tuple expected by ctypes.Structure"""
-        return (self.name, self.dtype)
+        # multiply data type by length to get size of array
+        return (self.name, self.dtype * self.length)
 
 
 class Struct:
@@ -122,7 +145,7 @@ class Struct:
         data = {}
 
         data["name"] = self.name
-        data["size"] = ctypes.sizeof(self.dtype)
+        data["size"] = self.size
         data["alignment"] = ctypes.alignment(self.dtype)
         data["members"] = [{"name": member.name,
                             "size":
