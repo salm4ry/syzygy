@@ -28,7 +28,6 @@ textarea {
 	min-height: 20rem;
 	field-sizing: content;
 	padding: 0.5em 1em;
-	font-family: 'Roboto Mono', monospace;
 }
 
 ::placeholder {
@@ -39,7 +38,7 @@ textarea {
 <form method="POST" on:submit|preventDefault={submitCode}>
 	<textarea name="code"
 		  placeholder="your code here"
-		  class="textarea bg-base-200 w-full h-full"
+		  class="textarea code bg-base-200 w-full h-full"
 		  tabIndex={-1}></textarea>
 	<button class="btn btn-primary mt-4">
 		submit

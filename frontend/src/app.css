@@ -15,3 +15,7 @@
 	margin: auto;  /* horizontally center */
 	width: 50%;
 }
+
+.code {
+	font-family: 'Roboto Mono', monospace;
+}
