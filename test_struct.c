@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 
 struct foo {
 	int a;
@@ -32,16 +33,23 @@ struct foobar {
 	double c;
 };
 
+struct array_test {
+	int apple[4];
+	bool banana[3];
+	char cherry[2];
+};
+
 int main(int argc, char *argv[])
 {
 	printf("sizeof(foo) = %ld\n"
 	       "sizeof(bar) = %ld\n"
 	       "sizeof(baz) = %ld\n"
 	       "sizeof(baz_2) = %ld\n"
-	       "sizeof(foobar) = %ld\n",
+	       "sizeof(foobar) = %ld\n"
+	       "sizeof(array_test) = %ld\n",
 	       sizeof(struct foo), sizeof(struct bar),
 	       sizeof(struct baz), sizeof(struct baz_2),
-	       sizeof(struct foobar));
+	       sizeof(struct foobar), sizeof(struct array_test));
 
 	return 0;
 }
