@@ -1,10 +1,8 @@
 <style>
   /* stick to top of screen */
   .sticky {
-      position: fixed !important;
-      top: 0 !important;
-      width: 100% !important;
-      z-index: 99 !important;
+      position: sticky;
+      top: 0;
   }
 
   .btn {
