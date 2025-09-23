@@ -48,7 +48,7 @@ function buildBorder(position: number) {
 	}
 }
 
-function buildRect(position: number, memberIndex: number, member: any) {
+function buildRect(position: number, member: any) {
 	return {
 		x: position,
 		y: 0,
@@ -83,11 +83,10 @@ function buildSvg() {
 	let res: Array<Rect> = [];
 	let padding = 0;
 
-	for (let i = 0; i < jsonData.members.length; i++) {
-		let currentMember = jsonData.members[i];
-		if (bytePos % currentMember.alignment != 0) {
+	for (const member of jsonData.members) {
+		if (bytePos % member.alignment != 0) {
 			// calculate padding size
-			padding = currentMember.alignment - (bytePos % currentMember.alignment);
+			padding = member.alignment - (bytePos % member.alignment);
 
 			// add border
 			res = [...res, buildBorder(bytePos)];
@@ -101,9 +100,9 @@ function buildSvg() {
 		res = [...res, buildBorder(bytePos)];
 
 		// add member rectangle
-		res = [...res, buildRect(bytePos, i, currentMember)];
+		res = [...res, buildRect(bytePos, member)];
 
-		bytePos += currentMember.size;
+		bytePos += member.size;
 	}
 
 	if (bytePos % jsonData.alignment != 0) {
@@ -168,11 +167,6 @@ function hideTooltip() {
 					      onblur={() => hideTooltip()}
 					      role="tooltip">
 					</rect>
-					{#if s.member.colour != paddingColour}
-						<!-- border between struct members -->
-						<line x1={s.x} x2={s.x} y1=0 y2={s.height}
-							style="stroke-width:{strokeWidth};stroke:{borderColour}"/>
-					{/if}
 				{/if}
 			{/each}
 			</svg>
