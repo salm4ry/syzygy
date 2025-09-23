@@ -17,4 +17,13 @@
     <a class="btn btn-ghost text-xl text-primary" href="/">syzygy 🪐</a>
   </div>
 
+  <!-- TODO responsive: condense to drop-down on smaller screens -->
+  <div class="flex-none">
+    <ul class="menu menu-horizontal px-1">
+      <li><a href="/how-to-use">how to use</a></li>
+      <li><a href="/examples">examples</a></li>
+      <li><a href="/about">about</a></li>
+    </ul>
+  </div>
+
 </div>
