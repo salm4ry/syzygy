@@ -6,7 +6,7 @@
 
 <Navbar />
 
-<div class="m-20"></div>
+<div class="m-4"></div>
 
 <div class="p-2">
   {@render children()}
