@@ -1,5 +1,4 @@
 <script lang="ts">
-import { onMount } from "svelte";
 import { accentColours as accentColours, paddingColour, borderColour } from "$lib/colours";
 
 interface MemberInfo {
@@ -14,17 +13,20 @@ interface Rect {
 	x: number,
 	y: number,
 	height: string,
-	fill: string
 	member: MemberInfo
 };
 
 
-let memberColours = accentColours;
-
 const strokeWidth = 0.3;
 const rectHeight = "100%";
 
-const emptyMember = {name: '', isPadding: true, size: 0, alignment: 0, colour: ''};
+const emptyMember = {
+	name: '',
+	isPadding: true,
+	size: 0,
+	alignment: 0,
+	colour: borderColour
+};
 
 // take JSON data from server as input
 let { jsonData } = $props();
@@ -32,29 +34,31 @@ let svgData = $derived(buildSvg());  // SVG data derived from JSON data in build
 
 let tooltipContent: MemberInfo = $state(emptyMember);
 
+function genRandColour() {
+	// seed chosen by implementation
+	return accentColours[Math.floor(Math.random() * accentColours.length)];
+}
+
 function buildBorder(position: number) {
 	return {
 		x: position,
 		y: 0,
 		height: rectHeight,
-		fill: borderColour,
 		member: emptyMember
 	}
 }
 
 function buildRect(position: number, memberIndex: number, member: any) {
-	let colour = memberColours[memberIndex % memberColours.length];
 	return {
 		x: position,
 		y: 0,
 		height: rectHeight,
-		fill: colour,
 		member: {
 			name: member.name,
 			isPadding: false,
 			size: member.size,
 			alignment: member.alignment,
-			colour: colour
+			colour: genRandColour()
 		}
 	}
 }
@@ -64,7 +68,6 @@ function buildPadding(position: number, width: number) {
 		x: position,
 		y: 0,
 		height: rectHeight,
-		fill: paddingColour,
 		member: {
 			name: "padding",
 			isPadding: true,
@@ -131,24 +134,6 @@ function hideTooltip() {
 	  tooltip.style.display = "none";
   }
 }
-
-
-onMount(() => {
-	/*
-	shuffle accent colour order (Fisher-Yates shuffle/Knuth shuffle): https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#JavaScript_implementation
-
-	determine the next element in the shuffled list by randomly drawing
-	an element until no elements remain (here, by going through the array
-	backwards)
-	*/
-	for (let i = memberColours.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i+1));
-		[memberColours[i], memberColours[j]] = [
-		memberColours[j], memberColours[i]];
-	}
-
-	buildSvg();
-});
 </script>
 
 <div class="card bg-base-300">
@@ -170,20 +155,20 @@ onMount(() => {
 			</div>
 			<svg class="m-2 w-48 w-full" viewBox="0 0 {svgData.totalWidth} {svgData.totalWidth/5}">
 			{#each svgData.entries as s}
-				{#if s.fill == borderColour}
+				{#if s.member.colour == borderColour}
 					<!-- border between member bytes and their padding -->
 					<line x1={s.x} x2={s.x} y1=0 y2={s.height}
 						style="stroke-width:{strokeWidth};stroke:{borderColour}"/>
 				{:else}
 					<rect x={s.x} y={s.y} width={s.member.size} height={s.height}
-					      style="fill:{s.fill}"
+					      style="fill:{s.member.colour}"
 					      onmousemove={() => showTooltip(s.member)}
 					      onfocus={() => showTooltip(s.member)}
 					      onmouseout={() => hideTooltip()}
 					      onblur={() => hideTooltip()}
 					      role="tooltip">
 					</rect>
-					{#if s.fill != paddingColour}
+					{#if s.member.colour != paddingColour}
 						<!-- border between struct members -->
 						<line x1={s.x} x2={s.x} y1=0 y2={s.height}
 							style="stroke-width:{strokeWidth};stroke:{borderColour}"/>
