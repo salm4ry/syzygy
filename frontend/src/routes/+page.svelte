@@ -4,7 +4,6 @@ import "../app.css";
 import Syzygy from "$lib/Syzygy.svelte";
 </script>
 
-<!-- TODO add memory layout colour code -->
 <div class="center">
 <article class="prose mb-4">
 <h1>welcome to syzygy 🪐</h1>
