@@ -34,9 +34,24 @@ let svgData = $derived(buildSvg());  // SVG data derived from JSON data in build
 
 let tooltipContent: MemberInfo = $state(emptyMember);
 
+let colours = accentColours;
+
 function genRandColour() {
+	// refill colour array if it becomes empty
+	if (colours.length == 0) {
+		colours = accentColours;
+	}
+
 	// seed chosen by implementation
-	return accentColours[Math.floor(Math.random() * accentColours.length)];
+	let chosenColour = colours[Math.floor(Math.random()
+		* colours.length)];
+
+	// remove chosen colour in order to avoid collisions
+	colours = colours.filter(
+		item => item !== chosenColour
+	);
+
+	return chosenColour;
 }
 
 function buildBorder(position: number) {
