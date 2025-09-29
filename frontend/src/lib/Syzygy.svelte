@@ -5,12 +5,13 @@ import CodeInput from "$lib/CodeInput.svelte";
 import RenderStruct from "$lib/RenderStruct.svelte";
 
 let data: JSON;
+export let code: string;
 </script>
 
 <div class="w-90% h-90%">
 	<div class="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
 		<div class="col-span-1">
-			<CodeInput bind:data/>
+			<CodeInput bind:data bind:code/>
 		</div>
 		<!-- split json array into individual elements and iterate over it -->
 		<div class="col-span-1 grid grid-cols-1 gap-2">

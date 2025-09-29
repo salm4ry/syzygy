@@ -85,3 +85,9 @@ PUBLIC_FLASK_PORT=8000
     - [x] member info on hover: [DaisyUI tooltip](https://daisyui.com/components/tooltip)
 - [ ] improve test cases (currently in `test_struct.c`)
 - [x] favicon and title
+- [ ] other pages
+    - [ ] how to use
+    - [ ] examples
+        - [ ] base
+        - [x] tidy up
+    - [ ] about

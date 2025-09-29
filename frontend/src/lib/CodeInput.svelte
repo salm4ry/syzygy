@@ -5,6 +5,7 @@ import {
 } from '$env/static/public';
 
 export let data;
+export let code: string;
 
 async function submitCode(event: Event) {
 	const form = event.target as HTMLFormElement;
@@ -39,7 +40,8 @@ textarea {
 	<textarea name="code"
 		  placeholder="your code here"
 		  class="textarea code bg-base-200 w-full h-full"
-		  tabIndex={-1}></textarea>
+		  tabIndex={-1}
+		  bind:value={code}></textarea>
 	<button class="btn btn-primary mt-4">
 		submit
 	</button>
