@@ -84,3 +84,4 @@ PUBLIC_FLASK_PORT=8000
     - [x] randomise member colours
     - [x] member info on hover: [DaisyUI tooltip](https://daisyui.com/components/tooltip)
 - [ ] improve test cases (currently in `test_struct.c`)
+- [x] favicon and title

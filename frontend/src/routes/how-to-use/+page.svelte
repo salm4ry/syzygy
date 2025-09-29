@@ -1,3 +1,7 @@
+<svelte:head>
+	<title>How to Use | syzygy</title>
+</svelte:head>
+
 <script lang="ts">
 import '../../app.css';
 
