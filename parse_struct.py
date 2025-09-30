@@ -2,7 +2,8 @@
 
 import ctypes
 import logging
-from pydoc import locate
+
+from c_types import TYPES
 
 ASTERISK = "*"
 ARRAY_START = "["
@@ -32,13 +33,28 @@ def extract_type(type_str: str):
             on success
         (None, x) on error (e.g. struct required)
     """
+
     num_elems = 1
     # locate data type from name
-    res = locate(f"ctypes.c_{type_str.split()[0]}")
+    # res = locate(f"ctypes.c_{type_str.split()[0]}")
+    res = None
+
+    if contains_array(type_str):
+        # remove array part of type when looking up type in dict
+        type_key = " ".join(type_str.split()[:-2])
+    else:
+        # only remove variable name
+        type_key = " ".join(type_str.split()[:-1])
+
+    # look up type in dictionary
+    try:
+        res = TYPES[type_key]
+    except KeyError:
+        pass
 
     # treat all pointers as void pointers (same size)
     if ASTERISK in type_str:
-        res = ctypes.c_voidp
+        res = TYPES[ASTERISK]
     elif contains_array(type_str):
         # type is an array: find the length (characters between the two
         # brackets)
