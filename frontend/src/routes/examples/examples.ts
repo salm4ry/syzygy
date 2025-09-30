@@ -1,8 +1,8 @@
 export const examples = [
 {
 	name: 'Simple struct',
-	description: 'Containing data types of different sizes (4, 2, and 1 bytes\
-		respectively)',
+	description: `Containing data types of different sizes (4, 2, and 1 bytes
+		respectively)`,
 	code:
 `struct letters {
 	int a;
@@ -11,8 +11,9 @@ export const examples = [
 };`,
 }, {
 	name: 'Struct dependency',
-	description: 'Here, the second struct depends on the first i.e. uses the first\
-		within its definition.',
+	description: `Here, the second <span class="code">struct</span> depends
+		on the first i.e. uses the first within its definition. Note
+		that syzygy can parse <span class="code">typedef</span>.`,
 	code:
 `typedef struct first {
 	char *name;
