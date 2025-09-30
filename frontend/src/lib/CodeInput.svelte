@@ -12,15 +12,19 @@ async function submitCode(event: Event) {
 	const code = new FormData(form).get("code") as string;
 
 	// submit code to Flask server (retrieve host and port from environment
-	const response = await fetch(
-	`${PUBLIC_FLASK_HOST}:${PUBLIC_FLASK_PORT}/view`, {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ code: code })
-	});
+	try {
+		const response = await fetch(
+		`${PUBLIC_FLASK_HOST}:${PUBLIC_FLASK_PORT}/view`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ code: code })
+		});
 
-	// get response from Flask server
-	data = await response.json();
+		// get response from Flask server
+		data = await response.json();
+	} catch (NetworkError) {
+		data = [];
+	}
 }
 </script>
 

@@ -149,13 +149,15 @@ class Struct:
         data = {}
 
         data["name"] = self.name
-        data["size"] = ctypes.sizeof(self.dtype)
-        data["alignment"] = ctypes.alignment(self.dtype)
-        data["members"] = [{"name": member.name,
-                            "size":
-                                ctypes.sizeof(member.dtype) * member.length,
-                            "alignment": ctypes.alignment(member.dtype)
-                            } for member in self.members]
+        if self.dtype:
+            data["size"] = ctypes.sizeof(self.dtype)
+            data["alignment"] = ctypes.alignment(self.dtype)
+            data["members"] = [{"name": member.name,
+                                "size":
+                                    ctypes.sizeof(member.dtype) *
+                                    member.length,
+                                "alignment": ctypes.alignment(member.dtype)
+                                } for member in self.members]
 
         return data
 

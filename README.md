@@ -89,4 +89,4 @@ PUBLIC_FLASK_PORT=8000
     - [ ] how to use: add list of supported types etc.
     - [x] examples
     - [ ] about
-- [ ] error handling
+- [x] error handling

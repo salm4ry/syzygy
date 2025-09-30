@@ -78,8 +78,11 @@ def fix_struct_deps(struct_list):
             for member in struct.members:
                 if member.dtype is None:
                     # find struct dependency (first match)
-                    dep_struct = next(x for x in struct_list if x.name ==
-                                      member.dep_struct)
+                    try:
+                        dep_struct = next(x for x in struct_list if x.name ==
+                                          member.dep_struct)
+                    except StopIteration:
+                        break
 
                     logger.debug("%s.%s: found %s", struct.name, member.name,
                                  dep_struct)
@@ -95,7 +98,10 @@ def fix_struct_deps(struct_list):
 
             # finally, get ctypes.Structure type, size, and alignment now
             # that all members are defined
-            struct.dtype = struct.to_structure()
+            if all(member.dtype is not None for member in struct.members):
+                struct.dtype = struct.to_structure()
+            else:
+                struct.dtype = None
 
     return struct_list
 
