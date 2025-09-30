@@ -7,6 +7,7 @@ import menu from '$lib/assets/menu.svg';
   .sticky {
       position: sticky;
       top: 0;
+      z-index: 1;
   }
 
   .btn {
