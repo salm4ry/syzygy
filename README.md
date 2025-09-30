@@ -86,7 +86,7 @@ PUBLIC_FLASK_PORT=8000
 - [ ] improve test cases (currently in `test_struct.c`)
 - [x] favicon and title
 - [ ] other pages
-    - [ ] how to use: add list of supported types etc.
+    - [x] how to use: add list of supported types etc.
     - [x] examples
     - [ ] about
 - [x] error handling

@@ -10,7 +10,7 @@ import Syzygy from "$lib/Syzygy.svelte";
 let code: string;
 </script>
 
-<article class="prose m-2 mb-4">
+<article class="prose m-2 mb-4 max-w-2/3">
 <h1>welcome to syzygy 🪐</h1>
 
 <blockquote>

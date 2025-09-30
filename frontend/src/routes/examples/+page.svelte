@@ -14,7 +14,7 @@ export let selected = examples[0].code;
 
 <article class="prose m-2 max-w-full">
 <h1>Examples</h1>
-<p>Visualise some example structs!</p>
+<p>Visualise some example <span class="code">struct</span>s!</p>
 <hr>
 </article>
 
