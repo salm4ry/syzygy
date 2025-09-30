@@ -14,19 +14,18 @@ export const examples = [
 	description: 'Here, the second struct depends on the first i.e. uses the first\
 		within its definition.',
 	code:
-`typedef struct baz {
+`typedef struct first {
 	char *name;
 	int age;
 	double money;
-} baz_t;
+} first_t;
 
-typedef struct baz_2 {
-	char* name;
-	char **double_name;
-	struct baz before;
-	int age;
-	double money;
-} baz_2_t;`,
+typedef struct second {
+	char **names;
+	struct first old;
+	int *ages;
+	double bonus;
+} second_t;`,
 }, {
 	name: 'Arrays',
 	description: 'syzygy can handle arrays as well!',
