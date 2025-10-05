@@ -12,13 +12,13 @@ interface MemberInfo {
 interface Rect {
 	x: number,
 	y: number,
-	height: string,
+	height: number,
 	member: MemberInfo
 };
 
 
 const strokeWidth = 0.3;
-const rectHeight = "100%";
+const rectHeight = 50;
 
 const emptyMember = {
 	name: '',
@@ -154,20 +154,27 @@ function hideTooltip() {
 	<h2 class="card-title code m-2"><span class="code font-normal">struct</span> {jsonData.name}</h2>
 	<p class="ml-2"><strong>size:</strong> {jsonData.size}</p>
 	<p class="ml-2"><strong>alignment:</strong> {jsonData.alignment}</p>
-	<div class="center">
+
+	<!-- spacing for tooltip -->
+	<div class="pb-20"></div>
 		<div class="tooltip" style="--tt-bg: {tooltipContent.colour}">
 			<div class="tooltip-content flex flex-col items-start">
-				{#if tooltipContent.isPadding}
-					<p><strong>padding</strong></p>
+				{#if tooltipContent.name == ''}
+					<p>click/hover over members for more information!</p>
 				{:else}
-					<p><strong>name:</strong> <span class="code">{tooltipContent.name}</span></p>
-				{/if}
-				<p><strong>size:</strong> <span class="code">{tooltipContent.size}</span></p>
-				{#if tooltipContent.alignment != 0}
-					<p><strong>alignment:</strong> <span class="code">{tooltipContent.alignment}</span></p>
+					{#if tooltipContent.isPadding}
+						<p><strong>padding</strong></p>
+					{:else}
+						<p><strong>name:</strong> <span class="code">{tooltipContent.name}</span></p>
+					{/if}
+					<p><strong>size:</strong> <span class="code">{tooltipContent.size}</span></p>
+					{#if tooltipContent.alignment != 0}
+						<p><strong>alignment:</strong> <span class="code">{tooltipContent.alignment}</span></p>
+					{/if}
 				{/if}
 			</div>
-			<svg class="m-2 w-48 w-full" viewBox="0 0 {svgData.totalWidth} {svgData.totalWidth/5}">
+			<svg class="p-4 w-full center !w-full" viewBox="0 0 {svgData.totalWidth} {svgData.totalWidth/5}"
+			      preserveAspectRatio="none">
 			{#each svgData.entries as s}
 				{#if s.member.colour == borderColour}
 					<!-- border between member bytes and their padding -->
@@ -186,5 +193,4 @@ function hideTooltip() {
 			{/each}
 			</svg>
 		</div>
-	</div>
 </div>

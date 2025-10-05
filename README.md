@@ -78,9 +78,8 @@ PUBLIC_FLASK_PORT=8000
 - [ ] Makefile for running web app
     - [x] dev
     - [ ] prod
-- [ ] improve rendered SVGs
+- [x] improve rendered SVGs
     - [x] scale to boxes
-    - [ ] add scrollbar if too long
     - [x] randomise member colours
     - [x] member info on hover: [DaisyUI tooltip](https://daisyui.com/components/tooltip)
 - [ ] improve test cases (currently in `test_struct.c`)

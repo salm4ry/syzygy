@@ -25,7 +25,6 @@ export let selected = examples[0].code;
     {e.name}
   </label>
 <div class="tab-content bg-base-100 p-6">
-    <!-- TODO description -->
     <p class="mb-4">{@html e.description}</p>
     <Syzygy bind:code={selected}/>
 </div>
