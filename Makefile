@@ -10,8 +10,3 @@ dev-backend:
 # run SvelteKit frontend in dev mode
 dev-frontend:
 	cd frontend && npm run dev
-
-
-# TODO production targets
-# frontend: https://svelte.dev/docs/kit/adapters
-# backend: https://flask.palletsprojects.com/en/stable/deploying/
