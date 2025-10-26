@@ -36,7 +36,6 @@ import menu from '$lib/assets/menu.svg';
       <ul class="menu menu-horizontal px-1">
         <li><a href="/how-to-use">how to use</a></li>
         <li><a href="/examples">examples</a></li>
-        <li><a href="/about">about</a></li>
       </ul>
     </div>
   </div>
