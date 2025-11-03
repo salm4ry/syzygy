@@ -108,8 +108,10 @@ class StructMember:
 
         # type requires a struct
         if self.dtype is None:
+            # only replace first occurrence of the word struct to avoid
+            # garbling struct names containing the string "struct"
             self.dep_struct = ("".join(self.type_str)).replace(
-                    "struct", "")
+                    "struct", "", 1)
             # strip square brackets from array
             self.dep_struct = self.dep_struct.split(ARRAY_START, 1)[0]
             logger.debug("member %s needs %s", self.name, self.dep_struct)
