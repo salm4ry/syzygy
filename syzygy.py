@@ -77,6 +77,7 @@ def fix_struct_deps(struct_list):
         if struct.dtype is None:
             for member in struct.members:
                 if member.dtype is None:
+                    logger.debug("looking for %s", member.dep_struct)
                     # find struct dependency (first match)
                     try:
                         dep_struct = next(x for x in struct_list if x.name ==
@@ -101,6 +102,7 @@ def fix_struct_deps(struct_list):
             if all(member.dtype is not None for member in struct.members):
                 struct.dtype = struct.to_structure()
             else:
+                logger.error("could not set type for %s", struct.name)
                 struct.dtype = None
 
     return struct_list
@@ -144,7 +146,10 @@ def visualise_struct(struct: Struct):
 
     --- = filled bytes
     xxx = unused bytes
+
+    Return struct visualisation string
     """
+    res = ""
     struct_alignment = ctypes.alignment(struct.dtype)
     struct_size = ctypes.sizeof(struct.dtype)
     byte_pos = 0
@@ -157,18 +162,19 @@ def visualise_struct(struct: Struct):
         if byte_pos % member_alignment != 0:
             # calculate padding size
             padding = member_alignment - (byte_pos % member_alignment)
-        print("".join([padding * "x", "|", member_size * "-"]), end="")
+        res += "".join([padding * "x", "|", member_size * "-"])
 
         byte_pos += padding + member_size
 
     if byte_pos % struct_alignment != 0:
         padding = struct_alignment - (byte_pos % struct_alignment)
-        print(padding * "x", end="")
+        res += padding * "x"
         byte_pos += padding
-    print("|")
+    res += "|\n"
 
     logger.debug("rendered %d bytes, expected %d", byte_pos, struct_size)
     assert byte_pos == struct_size
+    return res
 
 
 if __name__ == "__main__":
@@ -193,5 +199,4 @@ if __name__ == "__main__":
     # print structs, members, and their sizes
     for entry in structs:
         print_struct_with_sizes(entry)
-        visualise_struct(entry)
-        print()
+        print(visualise_struct(entry))
