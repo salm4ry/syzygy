@@ -1,0 +1,9 @@
+{
+	"structs": [
+		{
+			"size": 12,
+			"alignment": 4,
+			"layout": "|----|--xx|----|"
+		}
+	]
+}
