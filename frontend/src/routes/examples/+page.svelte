@@ -8,7 +8,7 @@ import '../../app.css';
 import Syzygy from '$lib/Syzygy.svelte';
 import { examples } from './examples';
 
-let selected = examples[0].code;
+let selected = examples[0];
 
 </script>
 
@@ -18,17 +18,12 @@ let selected = examples[0].code;
 <hr>
 </article>
 
-<!-- TODO fix disappearing textarea on edit -->
-
 <div role="tablist" class="tabs tabs-border">
 {#each examples as e}
-<label class="tab">
-    <input type="radio" bind:group={selected} value={e.code}/>
-    {e.name}
-  </label>
+<input type="radio" class="tab" value={e.name} bind:group={selected.name} aria-label="{e.name}">
 <div class="tab-content bg-base-100 p-6">
     <p class="mb-4">{@html e.description}</p>
-    <Syzygy bind:code={selected}/>
+    <Syzygy bind:code={e.code}/>
 </div>
 {/each}
 </div>
