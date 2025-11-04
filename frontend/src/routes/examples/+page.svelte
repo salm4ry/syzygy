@@ -8,7 +8,7 @@ import '../../app.css';
 import Syzygy from '$lib/Syzygy.svelte';
 import { examples } from './examples';
 
-export let selected = examples[0].code;
+let selected = examples[0].code;
 
 </script>
 
@@ -17,6 +17,8 @@ export let selected = examples[0].code;
 <p>Visualise some example <span class="code">struct</span>s!</p>
 <hr>
 </article>
+
+<!-- TODO fix disappearing textarea on edit -->
 
 <div role="tablist" class="tabs tabs-border">
 {#each examples as e}

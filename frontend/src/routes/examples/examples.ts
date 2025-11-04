@@ -13,7 +13,10 @@ export const examples = [
 	name: 'Struct dependency',
 	description: `Here, the second <span class="code">struct</span> depends
 		on the first i.e. uses the first within its definition. Note
-		that syzygy can parse <span class="code">typedef</span>.`,
+		that syzygy can only parse <span class="code">typedef</span>
+		members if the original struct name is used (e.g.
+		<span class="code">struct first</span> instead of
+		<span class="code">first_t</span>).`,
 	code:
 `typedef struct first {
 	char *name;
