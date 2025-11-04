@@ -72,17 +72,3 @@ Example configuration (Flask server on port `8000` of the same host as the front
 PUBLIC_FLASK_HOST="http://localhost"
 PUBLIC_FLASK_PORT=8000
 ```
-
-## To do
-- [x] document environment variables
-- [x] Makefile for running web app for development
-- [x] improve rendered SVGs
-    - [x] scale to boxes
-    - [x] randomise member colours
-    - [x] member info on hover: [DaisyUI tooltip](https://daisyui.com/components/tooltip)
-- [x] improve test cases (currently in `test_struct.c`)
-- [x] favicon and title
-- [x] other pages
-    - [x] how to use: add list of supported types etc.
-    - [x] examples
-- [x] error handling
