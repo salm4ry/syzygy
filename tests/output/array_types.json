@@ -1,0 +1,24 @@
+{
+	"structs": [
+		{
+			"name": "array_test",
+			"members": [
+				{
+					"name": "apple",
+					"dtype": "c_int",
+					"length": 4
+				},
+				{
+					"name": "banana",
+					"dtype": "c_bool",
+					"length": 3
+				},
+				{
+					"name": "cherry",
+					"dtype": "c_char",
+					"length": 2
+				}
+			]
+		}
+	]
+}

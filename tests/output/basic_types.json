@@ -1,0 +1,123 @@
+{
+	"structs": [
+		{
+			"name": "ints",
+			"members": [
+				{
+					"name": "alfa",
+					"dtype": "c_short"
+				},
+				{
+					"name": "bravo",
+					"dtype": "c_ushort"
+				},
+				{
+					"name": "charlie",
+					"dtype": "c_int"
+				},
+				{
+					"name": "delta",
+					"dtype": "c_int32"
+				},
+				{
+					"name": "echo",
+					"dtype": "c_uint64"
+				},
+				{
+					"name": "foxtrot",
+					"dtype": "c_uint"
+				},
+				{
+					"name": "golf",
+					"dtype": "c_long"
+				},
+				{
+					"name": "hotel",
+					"dtype": "c_ulong"
+				},
+				{
+					"name": "india",
+					"dtype": "c_longlong"
+				}
+
+			]
+		},
+		{
+			"name": "sizes",
+			"members": [
+				{
+					"name": "juliett",
+					"dtype": "c_size_t"
+				},
+				{
+					"name": "kilo",
+					"dtype": "c_ssize_t"
+				}
+			]
+		},
+		{
+			"name": "time",
+			"members": [
+				{
+					"name": "lima",
+					"dtype": "c_time_t"
+				}
+			]
+		},
+		{
+			"name": "floating_point",
+			"members": [
+				{
+					"name": "mike",
+					"dtype": "c_float"
+				},
+				{
+					"name": "november",
+					"dtype": "c_double"
+				},
+				{
+					"name": "oscar",
+					"dtype": "c_longdouble"
+				}
+			]
+		},
+		{
+			"name": "pointers",
+			"members": [
+				{
+					"name": "papa",
+					"dtype": "c_void_p"
+				},
+				{
+					"name": "quebec",
+					"dtype": "c_void_p"
+				},
+				{
+					"name": "romeo",
+					"dtype": "c_void_p"
+				}
+			]
+		},
+		{
+			"name": "bytes",
+			"members": [
+				{
+					"name": "sierra",
+					"dtype": "c_bool"
+				},
+				{
+					"name": "tango",
+					"dtype": "c_char"
+				},
+				{
+					"name": "uniform",
+					"dtype": "c_wchar"
+				},
+				{
+					"name": "victor",
+					"dtype": "c_ubyte"
+				}
+			]
+		}
+	]
+}
