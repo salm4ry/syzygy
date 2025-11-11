@@ -23,6 +23,9 @@ export let code: string;
 						{#if entry[1].hasOwnProperty('size')}
 							<RenderStruct jsonData={entry[1]}/>
 						{:else}
+						<!-- TODO: differentiate between
+						     empty response and no
+						     response (i.e. backend down -->
 						<ErrorAlert msg="Invalid struct <span class='code'>{entry[1].name}</span>"/>
 						{/if}
 					{/each}
