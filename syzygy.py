@@ -108,20 +108,6 @@ def fix_struct_deps(struct_list):
     return struct_list
 
 
-def parse_structs_from_file(filename):
-    """Extract and parse structs from a C file"""
-
-    with open(filename, 'r', encoding="ascii") as f:
-        data = f.readlines()
-
-    struct_list = [Struct(key, val) for key, val in
-                   extract_structs(data).items()]
-
-    struct_list = fix_struct_deps(struct_list)
-
-    return struct_list
-
-
 def parse_structs(data: str):
     struct_list = [Struct(key, val) for key, val in
                    extract_structs(data).items()]
@@ -129,6 +115,15 @@ def parse_structs(data: str):
     struct_list = fix_struct_deps(struct_list)
 
     return struct_list
+
+
+def parse_structs_from_file(filename):
+    """Extract and parse structs from a C file"""
+
+    with open(filename, 'r', encoding="ascii") as f:
+        data = f.readlines()
+
+    return parse_structs(data)
 
 
 def print_struct_with_sizes(struct: Struct):
