@@ -1,6 +1,7 @@
 <script lang="ts">
 import "../app.css";
 
+import { ERROR_RESP } from "$lib/error";
 import CodeInput from "$lib/CodeInput.svelte";
 import RenderStruct from "$lib/RenderStruct.svelte";
 import ErrorAlert from "./ErrorAlert.svelte";
@@ -18,19 +19,25 @@ export let code: string;
 		<div class="col-span-1 grid grid-cols-1 gap-2">
 			{#if data}
 				{#if Object.keys(data).length != 0}
-					{#each Object.entries(data) as entry}
-						<!-- trim leading index -->
-						{#if entry[1].hasOwnProperty('size')}
-							<RenderStruct jsonData={entry[1]}/>
-						{:else}
-						<!-- TODO: differentiate between
-						     empty response and no
-						     response (i.e. backend down -->
-						<ErrorAlert msg="Invalid struct <span class='code'>{entry[1].name}</span>"/>
-						{/if}
-					{/each}
+					<!-- check for designated error response
+					     and use network error message if found -->
+					{#if JSON.stringify(data) == JSON.stringify(ERROR_RESP)}
+						<ErrorAlert msg="" type="network"/>
+					{:else}
+						{#each Object.entries(data) as entry}
+							<!-- trim leading index -->
+							{#if entry[1].hasOwnProperty('size')}
+								<RenderStruct jsonData={entry[1]}/>
+							{:else}
+							<!-- TODO: differentiate between
+							     empty response and no
+							     response (i.e. backend down -->
+							<ErrorAlert msg={entry[1].name} type="invalid"/>
+							{/if}
+						{/each}
+					{/if}
 				{:else}
-					<ErrorAlert msg="Invalid struct(s)"/>
+					<ErrorAlert msg="" type="invalid"/>
 				{/if}
 			{:else}
 				<!-- no struct data to display: placeholder -->

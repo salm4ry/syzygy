@@ -3,27 +3,34 @@ import {
 	PUBLIC_FLASK_HOST,
 	PUBLIC_FLASK_PORT
 } from '$env/static/public';
+import { ERROR_RESP } from "$lib/error";
 
 export let data;
 export let code: string;
+
+var handleError = function (err: any) {
+	console.warn(err);
+	return new Response("", { status: 400, statusText: err});
+}
 
 async function submitCode(event: Event) {
 	const form = event.target as HTMLFormElement;
 	const code = new FormData(form).get("code") as string;
 
 	// submit code to Flask server (retrieve host and port from environment
-	try {
-		const response = await fetch(
-		`${PUBLIC_FLASK_HOST}:${PUBLIC_FLASK_PORT}/view`, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ code: code })
-		});
+	let response = await fetch(
+	`${PUBLIC_FLASK_HOST}:${PUBLIC_FLASK_PORT}/view`, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ code: code })
+	}).catch(handleError);
 
+	if (response.status == 400) {
+		// send designated empty response on network error
+		data = ERROR_RESP;
+	} else {
 		// get response from Flask server
 		data = await response.json();
-	} catch (NetworkError) {
-		data = [];
 	}
 }
 </script>
