@@ -1,5 +1,6 @@
 <script lang="ts">
 export let msg: string;
+export let type: string;
 </script>
 
 <div role="alert" class="alert alert-error alert-soft alert-vertical sm:alert-horizontal">
@@ -10,8 +11,15 @@ export let msg: string;
 			d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
 		     />
 	</svg>
-	<!-- render HTML inside message 
-	TODO: remove HTML rendering- replace with props -->
-	<p>{@html msg}</p>
+	<!-- show different error messages depending on error type prop-->
+	{#if type == "invalid"}
+		{#if msg == ""}
+			<p>Invalid struct(s)</p>
+		{:else}
+			<p>Invalid struct <span class="code">{msg}</span></p>
+		{/if}
+	{:else if type == "network"}
+		<p>No response from server</p>
+	{/if}
 </div>
 
