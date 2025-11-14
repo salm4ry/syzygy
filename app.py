@@ -22,18 +22,13 @@ def hello():
 @cross_origin()
 def struct_info():
     """Return JSON object describing structs in provided code"""
-    res = []
-
     # get code from request body
     code_str = request.json.get("code")
 
     # split on newline
     structs = syzygy.parse_structs(code_str.split("\n"))
 
-    for entry in structs:
-        res.append(entry.to_json())
-
-    return jsonify(res)
+    return jsonify(list(map(lambda i: i.to_json(), structs)))
 
 
 if __name__ == "__main__":
