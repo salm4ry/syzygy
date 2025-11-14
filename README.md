@@ -72,3 +72,5 @@ Example configuration (Flask server on port `8000` of the same host as the front
 PUBLIC_FLASK_HOST="http://localhost"
 PUBLIC_FLASK_PORT=8000
 ```
+
+This example is also available in `frontend/.env.example`.
