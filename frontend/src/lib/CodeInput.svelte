@@ -25,8 +25,8 @@ async function submitCode(event: Event) {
 		body: JSON.stringify({ code: code })
 	}).catch(handleError);
 
-	if (response.status == 400) {
-		// send designated empty response on network error
+	if (response.status != 200) {
+		// send designated empty response on error
 		data = ERROR_RESP;
 	} else {
 		// get response from Flask server
